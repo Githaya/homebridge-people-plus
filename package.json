@@ -1,13 +1,19 @@
 {
   "name": "homebridge-people-plus",
-  "version": "0.4.0",
+  "version": "0.1.0",
   "description": "Homebridge plugin that provides details of who is in a Home",
+  "main": "index.js",
   "keywords": [
     "homebridge-plugin"
   ],
+  "homepage": "https://github.com/Glavin001/homebridge-people-plus#readme",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PeteLawrence/homebridge-people.git"
+    "url": "git+https://github.com/Glavin001/homebridge-people-plus.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Glavin001/homebridge-people-plus/issues"
   },
   "engines": {
     "node": ">=0.12.0",
@@ -15,10 +21,13 @@
   },
   "dependencies": {
     "arp-a": "^0.5.1",
-    "moment": "^2.11.2",
+    "bluebird": "^3.4.7",
+    "homebridge-plugin-helpers": ">=0.1.0",
     "net-ping": "^1.2.0",
-    "node-persist": "0.0.8",
-    "ping": "^0.1.10",
-    "request": "^2.79.0"
+    "ping": "^0.1.10"
+  },
+  "scripts": {
+    "start": "homebridge --plugin-path ./",
+    "debug": "DEBUG=* homebridge --debug --plugin-path ./"
   }
 }

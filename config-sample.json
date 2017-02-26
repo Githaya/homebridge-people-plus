@@ -1,0 +1,11 @@
+{
+    "accessories": [
+        {
+            "accessory": "PeoplePlus",
+            "name": "Glavin's iPhone",
+            "device": {
+                "mac": "cc:29:f5:3b:a2:f2"
+            }
+        }
+    ]
+}

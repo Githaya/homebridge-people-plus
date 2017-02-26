@@ -1,12 +1,16 @@
 const arp = require('arp-a');
 const { EventEmitter } = require('events');
-const ping = require ("net-ping");
+const ping = require("net-ping");
+const Promise = require('bluebird');
 
 class NetworkObserver extends EventEmitter {
-    constructor(config) {
+    constructor() {
         super();
-        this.config = config;
-        this.session = ping.createSession();
+        const sessionOptions = {
+            timeout: 2000,
+            retries: 1,
+        };
+        this.session = ping.createSession(sessionOptions);
         this.cachedDevices = [];
         this.tick();
     }
@@ -44,6 +48,11 @@ class NetworkObserver extends EventEmitter {
                                 active: isActive
                             })
                         )
+                        .catch(() =>
+                            Object.assign({}, entry, {
+                                active: false
+                            })
+                        )
                 ))
             );
     }
@@ -59,11 +68,14 @@ class NetworkObserver extends EventEmitter {
             this.session.pingHost(ip, error =>
                 resolve(!error)
             )
-        );
+        )
+        .timeout(this.pollInterval * 2)
+        .then(() => Promise.resolve(true))
+        .catch(() => Promise.resolve(false));
     }
 
 	tick() {
-		return this.update()//.timeout(this.pollInterval * 2)
+		return this.update()
 			.then(() => setTimeout(() => this.tick(), this.pollInterval))
 			.catch(() => setTimeout(() => this.tick(), this.pollInterval))
 			;
@@ -71,7 +83,7 @@ class NetworkObserver extends EventEmitter {
 
     update() {
         const { cachedDevices } = this;
-        return this.activeDevices
+        return this.devices
             .then(devices => {
                 const cacheMap = cachedDevices.reduce((hash, device) => {
                     hash[device.mac] = device;
@@ -113,6 +125,7 @@ class NetworkObserver extends EventEmitter {
 // const net = new NetworkObserver();
 // net.table.then(entries => console.log(entries));
 // net.on("connected:ip:192.168.1.17", (device) => console.log(device));
+// net.on("device:mac:cc:29:f5:3b:a2:f2", (device) => console.log("device", device));
 // net.on("connected:mac:cc:29:f5:3b:a2:f2", (device) => console.log("connected", device));
 // net.on("disconnected:mac:cc:29:f5:3b:a2:f2", (device) => console.log("disconnected", device));
 
