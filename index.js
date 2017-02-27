@@ -55,7 +55,7 @@ class PeoplePlusAccessory extends Accessory {
 			;
 		const active = this.service
 			.getCharacteristic(Characteristic.StatusActive)
-			.on('get', (callback) => callback(null, this.isDetected))
+			.on('get', (callback) => callback(null, true))
 			;
 		this.characteristics = {
             motion,
@@ -89,10 +89,9 @@ class PeoplePlusAccessory extends Accessory {
     }
 
     setDetected(isDetected) {
-        const { motion, active } = this.characteristics;
+        const { motion } = this.characteristics;
         this.isDetected = isDetected;
         motion.updateValue(isDetected);
-        active.updateValue(isDetected);
     }
 
 }
